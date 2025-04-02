@@ -1,0 +1,107 @@
+Pour réaliser cette to-do list, voici les étapes détaillées :
+
+### 1. **Configurer le projet Django**
+    - Installez Django et Django REST Framework :
+      ```bash
+      pip install django djangorestframework
+      ```
+    - Créez un projet Django :
+      ```bash
+      django-admin startproject Frewtzapi .
+      ```
+    - Créez une application `users` :
+      ```bash
+      python manage.py startapp users
+      ```
+    - Ajoutez `users` et `rest_framework` dans `INSTALLED_APPS` du fichier `settings.py`.
+
+### 2. **Modéliser les bases de données**
+    - Créez les modèles dans `users/models.py` :
+      - Modèle `User` : utilisez `AbstractUser` pour personnaliser.
+      - Modèle `Product`, `Farmer`, et `Appointment` : définissez les champs nécessaires.
+    - Exemple pour `Product` :
+      ```python
+      from django.db import models
+
+      class Product(models.Model):
+            name = models.CharField(max_length=255)
+            price = models.DecimalField(max_digits=10, decimal_places=2)
+            farmer = models.ForeignKey('Farmer', on_delete=models.CASCADE)
+      ```
+    - Appliquez les migrations :
+      ```bash
+      python manage.py makemigrations
+      python manage.py migrate
+      ```
+
+### 3. **Créer les serializers**
+    - Dans `users/serializers.py`, créez des serializers pour chaque modèle :
+      ```python
+      from rest_framework import serializers
+      from .models import User, Product, Farmer, Appointment
+
+      class ProductSerializer(serializers.ModelSerializer):
+            class Meta:
+                 model = Product
+                 fields = '__all__'
+      ```
+
+### 4. **Créer les vues**
+    - Dans `users/views.py`, utilisez `APIView` ou `ViewSet` pour chaque fonctionnalité.
+    - Exemple pour la gestion des produits :
+      ```python
+      from rest_framework.viewsets import ModelViewSet
+      from .models import Product
+      from .serializers import ProductSerializer
+
+      class ProductViewSet(ModelViewSet):
+            queryset = Product.objects.all()
+            serializer_class = ProductSerializer
+      ```
+
+### 5. **Configurer les URLs**
+    - Dans `users/urls.py`, configurez les routes :
+      ```python
+      from django.urls import path, include
+      from rest_framework.routers import DefaultRouter
+      from .views import ProductViewSet
+
+      router = DefaultRouter()
+      router.register('products', ProductViewSet)
+
+      urlpatterns = [
+            path('', include(router.urls)),
+      ]
+      ```
+    - Incluez ces URLs dans `Frewtzapi/urls.py`.
+
+### 6. **Configurer les permissions et l'authentification**
+    - Installez `djangorestframework-simplejwt` pour l'authentification par token :
+      ```bash
+      pip install djangorestframework-simplejwt
+      ```
+    - Configurez `settings.py` pour utiliser JWT.
+    - Définissez des permissions personnalisées pour les rôles (clients, fermiers, admins).
+
+### 7. **Mettre en place les fonctionnalités**
+    - Implémentez les fonctionnalités clients, fermiers, et administrateurs dans les vues.
+    - Exemple pour l'inscription des utilisateurs :
+      ```python
+      from rest_framework.views import APIView
+      from rest_framework.response import Response
+      from .serializers import UserSerializer
+
+      class RegisterView(APIView):
+            def post(self, request):
+                 serializer = UserSerializer(data=request.data)
+                 if serializer.is_valid():
+                      serializer.save()
+                      return Response(serializer.data, status=201)
+                 return Response(serializer.errors, status=400)
+      ```
+
+### 8. **Tester et déployer**
+    - Testez chaque fonctionnalité avec `Postman` ou `cURL`.
+    - Déployez l'application sur un serveur (par exemple, Heroku ou AWS).
+
+Cela vous donne une structure claire pour avancer.
