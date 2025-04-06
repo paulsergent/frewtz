@@ -1,6 +1,6 @@
 from rest_framework import serializers, status
 from rest_framework.response import Response
-from .models import User
+from .models import Product
 
 
 
@@ -15,6 +15,7 @@ class ProductSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         product = Product.objects.create(user=user, **validated_data)
         return product
+    
     
     def get_fields(self):
         fields = super().get_fields()

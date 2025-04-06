@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+   
+
+    {% for product in products %}
+
+    <h2>{{ product.name }}</h2>
+    {% if product.thumbnail %}
+    <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}" style="max-width: 250px">
+    {% else %}
+    <p>No image available for {{ product.name }}</p>
+    {% endif %}
+    <A href="{{ product.get_absolute_url }}">go to product</A>
+
+    {% empty %}
+    <p>No products available at the moment.</p>
+
+    {% endfor %}
+
+{% endblock %}

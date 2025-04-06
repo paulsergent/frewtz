@@ -40,13 +40,23 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'products',
-    'orders',
-    'cart',
-    'farmers',
-    'customers',
-    'managers',
+    'rest_framework_simplejwt',
+    #'orders',
+    # 'cart',
+    # 'farmers',
+    # 'customers',
+    # 'managers',
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -65,7 +75,7 @@ ROOT_URLCONF = 'Frewtzapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,3 +142,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
