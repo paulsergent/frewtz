@@ -1,6 +1,4 @@
-from django.contrib import admin
-from .views import index
-from django.urls import path, include
+from django.urls import path
 from .views import product_detail
 from django.conf.urls.static import static
 from Frewtzapi import settings
