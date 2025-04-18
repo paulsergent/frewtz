@@ -29,7 +29,8 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('role', 'customer')   
         return self.create_user(email, password, **extra_fields)
     def create_admin(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('role', 'admin')   
+        extra_fields.setdefault('role', 'admin') 
+        extra_fields.setdefault('is_staff', True)  
         return self.create_user(email, password, **extra_fields)
     
     

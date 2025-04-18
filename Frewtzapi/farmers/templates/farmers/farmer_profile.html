@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<H2>Farmer Profile: {{ user.first_name }} {{ user.last_name }}</H2>
+
+<ul>
+    <li>Farm Name: {{ user.farmer_user.farm_name }}</li>
+
+    <li>Farm Location: {{ user.farmer_user.farm_location }}</li>
+
+    <li>Farm Description: {{ user.farmer_user.farm_description }}</li>
+
+</ul>
+
+<p><a href="{% url 'farmer-profile-update' %}">edit</a> 
+
+<p><a href="{% url 'user-profile' %}">go back to user info</a></p> 
+
+
+
+{% endif %}
+
+{% endblock %}

@@ -12,6 +12,9 @@
 
     {{ user.email }}
     <a href="{% url 'logout' %}">log out</a>
+    <p>
+        <a href="{% url 'user-profile' %}">view profile</a>
+    </p>
 
 {% else %}
 <a href="{% url 'signup' %}">Sign up</a><span> or </span> <a href="{% url 'login' %}">Log in</a>

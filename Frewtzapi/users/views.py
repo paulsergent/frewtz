@@ -1,14 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
-from .serializers import UserSerializer, UserLoginSerializer
+from .serializers import UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from .models import User
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, permissions 
 from django.contrib.auth import authenticate, login, logout
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.auth import get_user_model
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 
@@ -78,9 +78,54 @@ class UserViewLogin(APIView):
         return response
     
     
+def user_profile(request):
+    permission_classes = [permissions.IsAuthenticated]
+    user = request.user
+    if request.method == 'POST':
+        serializer = UserUpdateSerializer(user, data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('user_profile')
+    else:
+        serializer = UserUpdateSerializer(user)
     
+    return render(request, 'users/profile.html', {'serializer': serializer})
+
+
+
+
+class UserProfileUpdate(APIView):
     
-    
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'users/profile_update.html'
+
+    def get(self, request):
+        serializer = UserUpdateSerializer(request.user)
+        return Response({'serializer': serializer})
+
+    def post(self, request):
+        user = request.user
+        serializer = UserUpdateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('user-profile')
+        return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
+        # Check if the role is being set to 'farmer'
+        if serializer.is_valid():
+            updated_user = serializer.save()
+            if serializer.validated_data.get('role') == 'farmer':
+                from farmers.models import Farmer  # Import here to avoid circular import
+                Farmer.objects.get_or_create(
+                    user=updated_user)
+        return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
+   
+def user_profile_delete(request):
+    permission_classes = [permissions.IsAuthenticated]
+    if user := request.user:
+        user.delete()
+    return redirect('index')
 
 def logout_user(request):
     

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'order',
     # 'cart',
-    # 'farmers',
+    'farmers',
     # 'customers',
     # 'managers',
 

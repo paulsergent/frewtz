@@ -36,6 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
             print(e, "FROM SERIALIZERS")
             raise serializers.ValidationError("User could not be created.")
         
+        
 
 
     
@@ -62,5 +63,15 @@ class UserLoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
         
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone_number', 'role']
+        extra_kwargs = {
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'phone_number': {'required': False},
+            'role': {'required': False}
+        }
     
     

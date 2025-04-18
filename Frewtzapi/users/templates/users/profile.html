@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<H2>User Profile: {{ user.email }}</H2>
+
+<uL>
+    <li>First Name: {{ user.first_name }}</li>
+ 
+    <li>Last Name: {{ user.last_name }}</li>
+ 
+    <li>Email: {{ user.email }}</li>
+ 
+    <li>Phone Number: {{ user.phone_number }}</li>
+ 
+    <li>Role: {{ user.role }}</li>
+
+</uL>
+{% if user.role == 'farmer' and user.farmer_user.farm_name %}
+<li>Farm Name: {{ user.farmer_user.farm_name }}</li>
+{% endif %}
+{{ farmer.farm_name }}
+<p><a href="{% url 'user-profile-update' %}">edit</a> <br> <a href="{% url 'user-profile-delete' %}" onclick="return confirm('You will permanently delete your profile. Are you sure?')">Delete User</a></p> 
+{% if user.role == 'farmer' %}
+{% if user.farmer_user.farm_name != '' %}
+<p><a href="{% url 'farmer-profile' %}">See your farm info</a></p> 
+
+{% else %}
+<p>You didn't enter your farm information. <a href="{% url 'farmer-create' %}">Create your farm info</a></p>
+{% endif %}
+{% endif %}
+<a href="{% url 'signup' %}">Sign up</a><span> or </span> <a href="{% url 'login' %}">Log in</a>
+{% endif %}
+
+
+{% endblock %}

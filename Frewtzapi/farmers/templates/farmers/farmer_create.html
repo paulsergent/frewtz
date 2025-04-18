@@ -2,12 +2,12 @@
 
 {% load rest_framework %}
 
-
 {% block content %}
 
-<H1>Signup</H1>
+{% if user.is_authenticated %}
+<H1>Enter your farm information</H1>
 <div class="card-body pt-0">
-    <form action="{% url 'signup' %}" method="POST" novalidate>                   
+    <form action="{% url 'farmer-create' %}" method="POST" novalidate>                   
        <div class='row mt-2'>
             {% csrf_token %}
             {% render_form serializer template_pack='rest_framework/vertical'%}
@@ -23,5 +23,6 @@
     </ul>
     {% endif %} 
 
+{% endif %}
 
 {% endblock %}
