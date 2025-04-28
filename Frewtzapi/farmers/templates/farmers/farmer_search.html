@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Search Results</h2>
+    {% if results %}
+        <ul>
+            {% for farmer in results %}
+                <li>
+                    <h3>{{ farmer.farm_name }}</h3>
+                    <p>Location: {{ farmer.farm_location }}</p>
+                    <p>Description: {{ farmer.farm_description }}</p>
+                    {% if farmer.profile_picture %}
+                        <img src="{{ farmer.profile_picture.url }}" alt="{{ farmer.farm_name }}" style="max-width: 250px">
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
+       
+    <p><a href="{% url 'farmers-list' %}">View all farmers</a></p>
+
+    
+
+{% endblock %}

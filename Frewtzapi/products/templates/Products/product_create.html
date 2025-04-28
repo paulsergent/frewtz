@@ -5,14 +5,14 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-<H1>Enter your farm information</H1>
+<H1>Enter product informations </H1>
 <div class="card-body pt-0">
-    <form action="{% url 'farmer-profile-update' %}" method="POST" enctype="multipart/form-data" novalidate >                   
+    <form action="{% url 'product-create' %}" method="POST" enctype="multipart/form-data" novalidate>                   
        <div class='row mt-2'>
             {% csrf_token %}
             {% render_form serializer template_pack='rest_framework/vertical'%}
         </div>
-        <button type="submit" class="btn btn-default">Edit your informations</button>
+        <button type="submit" class="btn btn-default">Save new product</button>
     {% if request.method == "POST" and serializer.errors %}
     <ul>
     {% for field, errs in serializer.errors.items %}
@@ -21,6 +21,7 @@
         {% endfor %}
     {% endfor %}
     </ul>
+    <p>Please correct the errors above and try again.</p>
     {% endif %} 
 
 {% endif %}

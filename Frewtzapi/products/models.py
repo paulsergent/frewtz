@@ -1,8 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from farmers.models import Farmer
 
@@ -16,9 +13,10 @@ class Product(models.Model):
     price = models.FloatField(default=0.0)
     stock = models.PositiveIntegerField(default=0)
     thumbnail = models.ImageField(upload_to='products', blank=True, null=True)
-    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE, related_name='products')
-    created_at = models.DateTimeField(auto_now_add=True)  # Automatically set the field to now when the object is first created.
+    farmer = models.ForeignKey(Farmer, on_delete=models.CASCADE, related_name='products', default=None)  # ForeignKey field to link the product to a farmer. The on_delete=models.CASCADE argument specifies that if the related farmer is deleted, all their products should also be deleted.
+    created_at = models.DateTimeField(default=timezone.now)  # Automatically set the field to now when the object is first created.
     
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):  # This method returns the name of the product and creates a name-tag for this model
         return f"{self.name} ({self.stock}) from {self.farmer}"

@@ -1,14 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+    
     <h2>{{ product.name }}</h2>
     <h3>NGN{{ product.price }}</h3>
-    <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}"" style="max-width: 250px">
+    {% if product.thumbnail %}
+        <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}"" style="max-width: 250px">
+    {% endif %}
+    <h3>
+    from {{ product.farmer }} </h3> 
+    {% if product.farmer.profile_picture %}
+    <img src="{{ product.farmer.profile_picture.url }}" alt="{{ product.farmer.farm_name }}" style="max-width: 50px">
+    {% endif %}
+   
     <p>{{ product.description }}</p>
     <p>{{ product.stock }} left</p>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.id == product.farmer.id %}
+        <p><a href="{% url 'product-update' product.slug %}">Update Product</a></p>
+    {% elif user.is_authenticated %}
     <p><a href="{% url 'add-to-cart' product.slug %}">Add to cart</a></p>
     {% endif %}
+    
+    {{ product.farmer.pk }}
+    {{ user.pk }}
 {% endblock %}
-

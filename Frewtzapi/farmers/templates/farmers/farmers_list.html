@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+   
+
+    {% for farmer in farmers %}
+
+    <ul>
+        <li>Farm Name: {{ farmer.farm_name }}</li>
+    
+        <li>Farm Location: {{ farmer.farm_location }}</li>
+    
+        <li>Farm Description: {{ farmer.farm_description }}</li>
+        {% if farmer.profile_picture %}
+        <li><img src="{{ farmer.profile_picture.url }}" alt="{{ farmer.farm_name }}" style="max-width: 250px"></li>
+        {% endif %} 
+    
+        
+    </ul>
+
+    {% endfor %}
+
+{% endblock %}

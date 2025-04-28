@@ -6,11 +6,12 @@ from .models import Farmer
 class FarmerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Farmer
-        fields = ['farm_name', 'farm_location', 'farm_description']
+        fields = ['farm_name', 'farm_location', 'farm_description', 'profile_picture']
         extra_kwargs = {
             'farm_name': {'required': True},
             'farm_location': {'required': True},
-            'farm_description': {'required': False}
+            'farm_description': {'required': False},
+            'profile_picture': {'required': False}
         }
         
     def create(self, validated_data):

@@ -8,6 +8,12 @@
 <a href="{% url 'index' %}">
     <h1>freWTz the strawberry shop</h1>
 </a>
+
+<h3><a href="{% url 'farmers-list' %}">Our farmers</a></h3>
+<form action="{% url 'farmer-search' %}" method="get">
+    <input type="text" name="query" placeholder="Search for farmers...">
+    <button type="submit">Search</button>
+</form>
 {% if user.is_authenticated %}
 
     {{ user.email }}
@@ -17,7 +23,7 @@
     </p>
 
 {% else %}
-<a href="{% url 'signup' %}">Sign up</a><span> or </span> <a href="{% url 'login' %}">Log in</a>
+<a href="{% url 'signup' %}">Sign up!</a><span> or </span> <a href="{% url 'login' %}">Log in</a>
 
 {% endif %}
 
@@ -28,9 +34,9 @@
 {% endif %}
 
 
-    {% block content %}
+{% block content %}
 
-    {% endblock %}
+{% endblock %}
     
 </body>
 </html>

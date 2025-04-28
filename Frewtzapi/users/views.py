@@ -7,7 +7,6 @@ from rest_framework import status, permissions
 from django.contrib.auth import authenticate, login, logout
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from django.shortcuts import redirect, render
-from django.contrib.auth import get_user_model
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 

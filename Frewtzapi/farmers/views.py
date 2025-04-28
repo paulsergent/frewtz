@@ -8,9 +8,14 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
+def farmers_list(request):
+    farmers = Farmer.objects.all()
+    return render(request, 'farmers/farmers_list.html', {'farmers': farmers})
+
+
 
 # Create your views here.
-class farmer_create(APIView):
+class FarmerCreate(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication] 
@@ -60,8 +65,30 @@ class FarmerProfileUpdate(APIView):
     
         def post(self, request):
             farmer = request.user.farmer_user
-            serializer = FarmerSerializer(farmer, data=request.data)
+            data = request.data.copy()
+            data.update(request.FILES)  # Include files in the data
+            
+            serializer = FarmerSerializer(farmer, data=data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return redirect('farmer-profile')
             return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
+        
+def farmer_search(request):
+    permission_classes = [permissions.AllowAny]
+    
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    query = request.GET.get('query')
+    if query:
+        results = Farmer.objects.filter(
+            farm_name__icontains=query
+        ) | Farmer.objects.filter(
+            farm_location__icontains=query
+        ) | Farmer.objects.filter(
+            products__name__icontains=query
+        )
+        results = results.distinct()
+    else:
+        results = Farmer.objects.all()
+    return render(request, 'farmers/farmer_search.html', {'results': results, 'query': query})
+
