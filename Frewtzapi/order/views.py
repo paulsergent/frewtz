@@ -30,3 +30,19 @@ def delete_cart(request):
     if cart := request.user.cart:
         cart.delete()
     return redirect('index')
+
+def confirm_order(request):
+    cart = get_object_or_404(Cart, user=request.user)
+    cart.delete()
+    return redirect('index')  # Redirect to the index page after confirming the order
+
+class OrderDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication] 
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'order/order_detail.html'
+    
+    def get(self, request, slug):
+        order = get_object_or_404(Order, slug=slug)
+        return Response({'order': order})  # Return the order details in the response
+    
