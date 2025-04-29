@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+{% for order in orders %}
+
+    <h2>{{ order.product.name }}</h2>
+    <img src="{{ order.product.thumbnail.url }}" alt="{{ order.product.name }}"" style="max-width: 250px">
+    <p>{{ order.quantity }} in your cart</p>
+
+{% endfor %}
+
+    
+    {% if orders %}
+        <h2>Total: NGN{{ total }}</h2>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+    {% if orders %}
+        <form action="{% url 'confirm-order' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Checkout</button>
+        </form>
+    {% endif %}
+
+<a href="{% url 'delete-cart' %}"> Delete Cart</a>
+
+{% endblock %}

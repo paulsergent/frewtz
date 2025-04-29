@@ -33,6 +33,11 @@
 </p>
 {% endif %}
 
+{% if user.farmer_user and new_orders %}
+    <div class="alert alert-info">
+        You have {{ new_orders.count }} new order{{ new_orders.count|pluralize }}!
+    </div>
+{% endif %}
 
 {% block content %}
 
