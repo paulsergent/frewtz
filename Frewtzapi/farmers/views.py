@@ -92,12 +92,13 @@ def farmer_search(request):
         results = Farmer.objects.all()
     return render(request, 'farmers/farmer_search.html', {'results': results, 'query': query})
 
-def farmer_alert(request):
-    farmer = request.user.farmer_user
-    new_orders = Order.objects.filter(product__farmer=farmer, ordered=True, status='pending')
-    return render(request, 'farmers/farmer_alert.html', {'new_orders': new_orders})
-
+# def farmer_alert(request):
+#     farmer = request.user.farmer_user
+#     new_orders = Order.objects.filter(products__farmer=farmer, ordered=True, status='pending').distinct()
+#     return render(request, 'farmers/farmer_alert.html', {'new_orders': new_orders})
+    
+   
 def farmer_order_history(request):
     farmer = request.user.farmer_user
     orders = Order.objects.filter(product__farmer=farmer, ordered=True).order_by('-ordered_date')
-    return render(request, 'order/farmer_order_history.html', {'orders': orders})
+    return render(request, 'farmers/farmer_order_history.html', {'orders': orders})

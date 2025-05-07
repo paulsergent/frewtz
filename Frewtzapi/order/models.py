@@ -43,4 +43,12 @@ class Cart(models.Model):
         self.orders.clear()  # Clear the ManyToMany field before deleting the cart
 
         super().delete(*args, **kwargs)
+
+def get_cart_total(self):
+    total = 0
+    for order in self.orders.all():
+        total += order.product.price * order.quantity
+    return total
+
+
     

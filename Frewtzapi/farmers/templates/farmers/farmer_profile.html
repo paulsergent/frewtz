@@ -3,44 +3,43 @@
 {% block content %}
 {% if user.is_authenticated %}
 
+    <H2>Farmer Profile: {{ user.first_name }} {{ user.last_name }}</H2>
+    <h3><a href="{% url 'farmer-order-history' %}">Your Order History</a></h3>
+    <ul>
+        <li>Farm Name: {{ user.farmer_user.farm_name }}</li>
 
-<H2>Farmer Profile: {{ user.first_name }} {{ user.last_name }}</H2>
+        <li>Farm Location: {{ user.farmer_user.farm_location }}</li>
 
-<ul>
-    <li>Farm Name: {{ user.farmer_user.farm_name }}</li>
+        <li>Farm Description: {{ user.farmer_user.farm_description }}</li>
+        {% if user.farmer_user.profile_picture %}
+        <li><img src="{{ user.farmer_user.profile_picture.url }}" alt="{{ user.farmer_user.farm_name }}" style="max-width: 250px"></li>
+        {% endif %} 
 
-    <li>Farm Location: {{ user.farmer_user.farm_location }}</li>
+        
+    </ul>
 
-    <li>Farm Description: {{ user.farmer_user.farm_description }}</li>
-    {% if user.farmer_user.profile_picture %}
-    <li><img src="{{ user.farmer_user.profile_picture.url }}" alt="{{ user.farmer_user.farm_name }}" style="max-width: 250px"></li>
-    {% endif %} 
-
-    
-</ul>
-
-<p><a href="{% url 'farmer-profile-update' %}">edit</a> 
+    <p><a href="{% url 'farmer-profile-update' %}">edit</a> 
 
 
-<H3><a href="{% url 'product-create' %}">Add new product</a></H3>
+    <H3><a href="{% url 'product-create' %}">Add new product</a></H3>
 
-{% for product in user.farmer_user.products.all %}
-    <h2>{{ product.name }}</h2>
-    <h3>NGN{{ product.price }}</h3>
-    {% if product.thumbnail %}
-        <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}"" style="max-width: 250px">
-    {% endif %}
-    <h3>from {{ product.farmer }} </h3> 
-    
-    <p>{{ product.description }}</p>
-    <p>{{ product.stock }} left</p>
-    <p><a href="{% url 'product-update' product.slug %}">Edit</a></p>
-    
-{% empty %}
-    <p>No products available at the moment.</p>
-{% endfor %}
+    {% for product in user.farmer_user.products.all %}
+        <h2>{{ product.name }}</h2>
+        <h3>NGN{{ product.price }}</h3>
+        {% if product.thumbnail %}
+            <img src="{{ product.thumbnail.url }}" alt="{{ product.name }}"" style="max-width: 250px">
+        {% endif %}
+        <h3>from {{ product.farmer }} </h3> 
+        
+        <p>{{ product.description }}</p>
+        <p>{{ product.stock }} left</p>
+        <p><a href="{% url 'product-update' product.slug %}">Edit</a></p>
+        
+    {% empty %}
+        <p>No products available at the moment.</p>
+    {% endfor %}
 
-<p><a href="{% url 'user-profile' %}">go back to user info</a></p> 
+    <p><a href="{% url 'user-profile' %}">go back to user info</a></p> 
 
 
 

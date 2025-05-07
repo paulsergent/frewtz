@@ -4,6 +4,8 @@
 {% if user.is_authenticated %}
 <H2>User Profile: {{ user.email }}</H2>
 
+<h3><a href="{% url 'customer-order-history' %}">Your Order History</a></h3>
+
 <uL>
     <li>First Name: {{ user.first_name }}</li>
  

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load rest_framework %}
+
+
+
+{% block content %}
+{% if user.is_authenticated %}
+<H1>Please select what to do with order</H1>
+<div class="card-body pt-0">
+    <form action="{% url 'handle-order-action' %}" method="POST" enctype="multipart/form-data" novalidate >                   
+       <div class='row mt-2'>
+            {% csrf_token %}
+            {% render_form serializer template_pack='rest_framework/vertical'%}
+        </div>
+        <button type="submit" class="btn btn-default">Edit your informations</button>
+    {% if request.method == "POST" and serializer.errors %}
+    <ul>
+    {% for field, errs in serializer.errors.items %}
+        {% for err in errs %}
+            <li>{{ err }}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+    {% endif %} 
+
+{% endif %}
+<a href="{% url 'index' %}">Back to shop</a>
+{% endblock %}

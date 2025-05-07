@@ -7,12 +7,13 @@
     <div>
         <p>{{ order.product.name }} - {{ order.quantity }} - {{ order.status }}</p>
         {% if order.status == 'pending' %}
-            <form method="post" action="{% url 'order-action' order.pk %}">
+            <form method="post" action="{% url 'handle-order-action' order.pk %}">
                 {% csrf_token %}
                 <button name="action" value="accept" type="submit">Accept</button>
+                <button name="action" value="reject" type="submit">Reject</button>
             </form>
         {% elif order.status == 'accepted' %}
-            <form method="post" action="{% url 'order-action' order.pk %}">
+            <form method="post" action="{% url 'handle-order-action' order.pk %}">
                 {% csrf_token %}
                 <button name="action" value="deliver" type="submit">Place in Delivery</button>
             </form>

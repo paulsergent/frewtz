@@ -32,7 +32,7 @@ def add_to_cart(request, slug):
 def cart(request):
 
     cart = get_object_or_404(Cart, user=request.user)
-    return render(request, 'cart.html', context={"orders": cart.orders.all()}) 
+    return render(request, 'order/cart.html', context={"orders": cart.orders.all()}) 
 
 def delete_cart(request):
     if cart := request.user.cart:
@@ -58,12 +58,8 @@ def place_order(request, slug):
     else:
         order.quantity += 1
         order.save()
+    
     return redirect(reverse("product", kwargs={"slug": slug}))
-
-def confirm_order(request):
-    cart = get_object_or_404(Cart, user=request.user)
-    cart.delete()
-    return redirect('customer-order-history')  # Redirect to order history after checkout
 
 def customer_order_history(request):
     orders = Order.objects.filter(user=request.user, ordered=True).order_by('-ordered_date')
@@ -72,6 +68,15 @@ def customer_order_history(request):
 class OrderActionView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsFarmerPermission]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'order/handle_order.html'
+
+    def get(self, request, pk):
+        order = get_object_or_404(Order, pk=pk)
+        if order.product.farmer.user != request.user:
+            return Response({'detail': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = OrderActionSerializer(order)
+        return Response({'order': order, 'serializer': serializer})
 
     def post(self, request, pk):
         order = get_object_or_404(Order, pk=pk)
@@ -81,6 +86,9 @@ class OrderActionView(APIView):
         if action == 'accept':
             order.status = 'accepted'
             order.save()
+        elif action == 'reject':
+            order.status = 'rejected'
+            order.save()
         elif action == 'deliver':
             if order.quantity > order.product.stock:
                 return Response({'detail': 'Not enough stock'}, status=status.HTTP_400_BAD_REQUEST)
@@ -89,3 +97,15 @@ class OrderActionView(APIView):
             order.product.save()
             order.save()
         return redirect('farmer-order-history')
+    
+    
+    
+def customer_confirm_delivery(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if order.user != request.user:
+        return Response({'detail': 'Forbidden'}, status=status.HTTP_403_FORBIDDEN)
+    action = request.POST.get('action')
+    if action == 'delivered':
+        order.status = 'delivered'
+        order.save()
+    return redirect('customer-order-history')

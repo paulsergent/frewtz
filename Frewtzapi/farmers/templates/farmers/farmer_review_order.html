@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+<form method="post" action="{% url 'handle-order' order.id %}">
+    {% csrf_token %}
+    <button name="action" value="accept" type="submit">Accept</button>
+    <button name="action" value="reject" type="submit">Reject</button>
+</form>
+{% endif %}
+
+{% if order.status == 'accepted' %}
+    <h2>Order Accepted</h2>
+{% elif order.status == 'rejected' %}
+    <h2>Order Rejected</h2>
+{% else %}
+    <h2>Order Status: {{ order.status }}</h2>
+{% endif %}
+{% endblock %}

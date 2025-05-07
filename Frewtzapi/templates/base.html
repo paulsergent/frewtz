@@ -33,7 +33,7 @@
 </p>
 {% endif %}
 
-{% if user.farmer_user and new_orders %}
+{% if user.is_authenticated and user.farmer_user and new_orders and new_orders.count > 0 %}
     <div class="alert alert-info">
         You have {{ new_orders.count }} new order{{ new_orders.count|pluralize }}!
     </div>

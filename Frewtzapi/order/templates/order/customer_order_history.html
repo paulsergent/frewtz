@@ -14,12 +14,23 @@
                 {% if order.status == 'rejected' %}
                     <span style="color:red;">Rejected by farmer</span>
                 {% elif order.status == 'accepted' %}
-                    <span style="color:green;">Accepted by farmer</span>
+                    <span style="color:orange;">Accepted by farmer</span>
                 {% elif order.status == 'on_delivery' %}
                     <span style="color:blue;">On delivery</span>
+                {% elif order.status == 'delivered' %}
+                    <span style="color:green;">Delivered</span>
+                {% elif order.status == 'pending' %}
+                    <span style="color:grey;">Pending</span>
                 {% endif %}
+
             </li>
+            {% if order.status == 'on_delivery' %}
+            <form method="post" action="{% url 'confirm-delivery' order.pk %}">
+                {% csrf_token %}
+                <button name="action" value="delivered" type="submit">Confirm order has been delivered</button>
+            </form>
             <hr>
+            {% endif %}
         {% endfor %}
     </ul>
 {% else %}
