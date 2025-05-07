@@ -42,8 +42,7 @@ class UserViewRegister(APIView):
 
 class UserViewLogin(APIView):
     permission_classes = [permissions.AllowAny]
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'users/login.html'
+
     def get(self, request):
         serializer = UserLoginSerializer()
         return Response({'serializer': serializer})
@@ -95,9 +94,6 @@ class UserProfileUpdate(APIView):
     
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication, BasicAuthentication]
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'users/profile_update.html'
-
     def get(self, request):
         serializer = UserUpdateSerializer(request.user)
         return Response({'serializer': serializer})
