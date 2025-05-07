@@ -1,5 +1,4 @@
 from rest_framework.views import APIView
-from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from .serializers import UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from .models import User
@@ -14,8 +13,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 class UserViewRegister(APIView):
     permission_classes = [permissions.AllowAny]  # Allow any user to access this view
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'users/signup.html'
+    
     def get(self, request):
         serializer = UserSerializer()
         return Response({'serializer': serializer})
@@ -37,7 +35,7 @@ class UserViewRegister(APIView):
         if user is not None:
             
             login(request, user)
-        response = redirect('index')
+        response = Response({'serializer': serializer.data}, status=status.HTTP_201_CREATED)
         response.set_cookie('access', str(access), httponly=True)
         return response
     
@@ -62,7 +60,7 @@ class UserViewLogin(APIView):
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
 
-        response = redirect('index')
+        response = Response({'serializer': serializer.data}, status=status.HTTP_200_OK)
         response.set_cookie(
             'access_token', 
             access, 
@@ -104,21 +102,21 @@ class UserProfileUpdate(APIView):
         serializer = UserUpdateSerializer(request.user)
         return Response({'serializer': serializer})
 
-    def post(self, request):
+    def patch(self, request):
         user = request.user
         serializer = UserUpdateSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('user-profile')
-        return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
-        # Check if the role is being set to 'farmer'
-        if serializer.is_valid():
-            updated_user = serializer.save()
-            if serializer.validated_data.get('role') == 'farmer':
-                from farmers.models import Farmer  # Import here to avoid circular import
-                Farmer.objects.get_or_create(
-                    user=updated_user)
-        return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'serializer': serializer}, status=status.HTTP_200_OK)
+        return Response({'serializer': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        #     updated_user = serializer.save()
+        #     if serializer.validated_data.get('role') == 'farmer':
+        #         from farmers.models import Farmer  # Import here to avoid circular import
+        #         Farmer.objects.get_or_create(
+        #             user=updated_user)
+        #     return Response({'serializer': serializer}, status=status.HTTP_200_OK)
+        # return Response({'serializer': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
    
 def user_profile_delete(request):
     permission_classes = [permissions.IsAuthenticated]
