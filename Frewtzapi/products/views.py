@@ -19,10 +19,13 @@ def index(request):
 
     return render(request, 'products/index.html', context={"products": products} )  # Render the template with the products context
 
-def product_detail(request, slug):
-    product = get_object_or_404(Product, slug=slug)
-    return render(request, 'products/detail.html', context={"product": product})
+class ProductDetail(APIView):
+    permission_classes = [permissions.AllowAny]
 
+    def get(self, request, slug):
+        product = get_object_or_404(Product, slug=slug)
+        serializer = ProductSerializer(instance=product, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProductCreate(APIView):
     permission_classes = [permissions.IsAuthenticated, IsFarmerPermission]
@@ -36,7 +39,7 @@ class ProductCreate(APIView):
 
     def get(self, request):
         serializer = ProductSerializer(context={'request': request})
-        return Response({'serializer': serializer})
+        return Response({'serializer': serializer.data})
 
     def post(self, request):
         data = request.data.copy()

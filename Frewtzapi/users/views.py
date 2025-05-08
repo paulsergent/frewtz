@@ -32,11 +32,8 @@ class UserViewRegister(APIView):
         user = serializer.instance
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         user = authenticate(request, email=user.email, password=request.data.get('password'))
-        if user is not None:
-            
-            login(request, user)
-        response = Response({'serializer': serializer.data}, status=status.HTTP_201_CREATED)
-        response.set_cookie('access', str(access), httponly=True)
+        response = Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
+        
         return response
     
 
@@ -59,18 +56,7 @@ class UserViewLogin(APIView):
         user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
 
-        response = Response({'serializer': serializer.data}, status=status.HTTP_200_OK)
-        response.set_cookie(
-            'access_token', 
-            access, 
-            httponly=True,
-            max_age=60*60*24,  # 1 day)
-        )
-        response.set_cookie(
-            'refresh_token', str(refresh),
-            httponly=True,
-            max_age=60*60*24*7,  # 7 days)
-        )
+        response = Response({'access_token': access, 'refresh_token': str(refresh)}, status=status.HTTP_200_OK)
         return response
     
     
