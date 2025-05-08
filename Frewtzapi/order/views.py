@@ -20,14 +20,18 @@ def add_to_cart(request, slug):
     order, created = Order.objects.get_or_create(user=user,
                                                  ordered=False,
                                                  product=product)
-
+     
     if created:
         cart.orders.add(order)
         cart.save()
     else:
         order.quantity += 1
         order.save()
-    return redirect(reverse("product", kwargs={"slug": slug})) 
+    total_price = sum(item.product.price * item.quantity for item in cart.orders.all())
+    return render(request, 'order/cart.html', {
+        "orders": cart.orders.all(),
+        "total_price": total_price
+    })
 
 def cart(request):
 
@@ -41,6 +45,11 @@ def delete_cart(request):
 
 def confirm_order(request):
     cart = get_object_or_404(Cart, user=request.user)
+    total_price = sum(item.product.price * item.quantity for item in cart.orders.all())
+    for order in cart.orders.all():
+        order.total_price = order.product.price * order.quantity
+        order.ordered = True
+        order.save()
     cart.delete()
     return redirect('index')  # Redirect to the index page after confirming the order
 

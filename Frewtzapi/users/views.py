@@ -111,15 +111,7 @@ class UserProfileUpdate(APIView):
             serializer.save()
             return redirect('user-profile')
         return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
-        # Check if the role is being set to 'farmer'
-        if serializer.is_valid():
-            updated_user = serializer.save()
-            if serializer.validated_data.get('role') == 'farmer':
-                from farmers.models import Farmer  # Import here to avoid circular import
-                Farmer.objects.get_or_create(
-                    user=updated_user)
-        return Response({'serializer': serializer}, status=status.HTTP_400_BAD_REQUEST)
-   
+        
 def user_profile_delete(request):
     permission_classes = [permissions.IsAuthenticated]
     if user := request.user:
